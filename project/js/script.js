@@ -1,17 +1,3 @@
-/* Задания на урок:
-
-1) Удалить все рекламные блоки со страницы (правая часть сайта)
-
-2) Изменить жанр фильма, поменять "комедия" на "драма"
-
-3) Изменить задний фон постера с фильмом на изображение "bg.jpg". Оно лежит в папке img.
-Реализовать только при помощи JS
-
-4) Список фильмов на странице сформировать на основании данных из этого JS файла.
-Отсортировать их по алфавиту 
-
-5) Добавить нумерацию выведенных фильмов */
-
 'use strict';
 
 //removing ads
@@ -38,11 +24,53 @@ const movieDB = {
 };
 
 //set films list with numbers by alphabet
-movieDB.movies.sort();
-const films = document.querySelector('.promo__interactive-list');
-films.innerHTML = "";
-movieDB.movies.forEach((elem, ind) => {
-	films.innerHTML += `
-		<li class="promo__interactive-item">${ind + 1}) ${elem}</li>
-	`;
-});
+updateFilmList();
+function updateFilmList() {
+	movieDB.movies.sort();
+	const films = document.querySelector('.promo__interactive-list');
+	films.innerHTML = "";
+	movieDB.movies.forEach((elem, ind) => {
+		films.innerHTML += `
+			<li class="promo__interactive-item">${ind + 1}) ${elem}<div class="delete"></div></li>
+		`;
+	});
+
+	const deleteFilms = document.querySelectorAll('.promo__interactive-item .delete');
+	deleteFilms.forEach((elem) => {
+		elem.addEventListener('click', deleteFilm);
+	});
+}
+
+//add new film in list
+const form = document.querySelector('form.add'),
+	  btn = form.querySelector('button');
+
+btn.addEventListener('click', btnClick);
+
+function deleteFilm(e) {
+	const curLi = e.target.parentElement,
+		  number = curLi.textContent.slice(')')[0];
+	movieDB.movies.splice(number - 1, 1);
+	updateFilmList();
+}
+
+function btnClick(event) {
+	event.preventDefault();
+	const newFilmName = form.querySelector('.adding__input');
+	let name = newFilmName.value;
+	if(name) {
+		//cut big name
+		if(name.length > 21) {
+			name = name.substr(0, 21) + '...';
+		}
+		addFilm(name);
+		if(form.querySelector('input[type="checkbox"]').checked) {
+			console.log("Добавляем любимый фильм");
+		}
+	}
+}
+
+function addFilm(film) {
+	movieDB.movies.push(film);
+	updateFilmList();
+}
