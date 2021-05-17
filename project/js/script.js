@@ -22,7 +22,7 @@ ads.forEach(function(elem) {
 
 
 //change genre
-document.querySelector('.promo__genre').innerHTML = "ДРАМА";
+document.querySelector('.promo__genre').textContent = "ДРАМА";
 
 //change bg
 document.querySelector('.promo__bg').style.backgroundImage = 'url("./img/bg.jpg")';
@@ -38,8 +38,11 @@ const movieDB = {
 };
 
 //set films list with numbers by alphabet
-movieDB.movies = movieDB.movies.sort();
-const films = document.querySelectorAll('.promo__interactive-list li');
-films.forEach((elem, ind) => {
-	elem.innerHTML = (ind+1) + ') ' + movieDB.movies[ind];
+movieDB.movies.sort();
+const films = document.querySelector('.promo__interactive-list');
+films.innerHTML = "";
+movieDB.movies.forEach((elem, ind) => {
+	films.innerHTML += `
+		<li class="promo__interactive-item">${ind + 1}) ${elem}</li>
+	`;
 });
